@@ -10,6 +10,12 @@ refs.divBackdrop.classList.remove('.is-hidden');
 const invokeFunction = createField();
 refs.divContainer.insertAdjacentHTML('beforeend', invokeFunction);
 
+// let markup = ``;
+// for (let i = 0; i < 9; i += 1) {
+//   markup += `<div class="field" data-id="1"></div>`;
+// }
+// refs.divContainer.insertAdjacentHTML('beforeend', markup);
+
 function createField() {
   return ` <div class="field" data-id="1"></div>
       <div class="field" data-id="2" ></div>
@@ -25,6 +31,7 @@ function createField() {
 refs.divContainer.addEventListener('click', onFieldClick);
 
 let player = 'X';
+let lastWinner = '';
 let counter = 0;
 let stepX = [];
 let stepO = [];
@@ -45,44 +52,19 @@ function onFieldClick(ev) {
   }
 
   counter += 1;
+
   if (!ev.target.textContent) {
     const id = Number(ev.target.dataset.id);
     if (player === 'X') {
       ev.target.style.backgroundColor = 'blue';
-
       stepX.push(id);
       const isWinner = chooseWinner(stepX);
-
-      if (isWinner) {
-        modalPopUp();
-        refs.textOutput.textContent = `Player ${player} is winner`;
-
-        refs.divContainer.innerHTML = invokeFunction;
-        reset();
-      } else if (!isWinner && counter === 9) {
-        modalPopUp();
-        refs.textOutput.textContent = 'DRAW';
-        refs.divContainer.innerHTML = invokeFunction;
-        reset();
-      }
+      endOfGame(isWinner);
     } else {
       ev.target.style.backgroundColor = 'lightblue';
       stepO.push(id);
       const isWinner = chooseWinner(stepO);
-
-      if (isWinner) {
-        modalPopUp();
-        refs.textOutput.textContent = `Player ${player} is winner`;
-
-        refs.divContainer.innerHTML = invokeFunction;
-        reset();
-        return;
-      } else if (!isWinner && counter === 9) {
-        modalPopUp();
-        refs.textOutput.textContent = 'DRAW';
-        refs.divContainer.innerHTML = invokeFunction;
-        reset();
-      }
+      endOfGame(isWinner);
     }
 
     ev.target.textContent = player;
@@ -97,7 +79,7 @@ function chooseWinner(arrPlayers) {
 
 function reset() {
   refs.divContainer.innerHTML = invokeFunction;
-  player = 'O';
+  player = lastWinner === 'X' ? 'O' : 'X';
   stepO = [];
   stepX = [];
   counter = 0;
@@ -111,4 +93,17 @@ refs.btnClose.addEventListener('click', onBtnClick);
 
 function onBtnClick() {
   refs.divBackdrop.classList.add('is-hidden');
+}
+
+function endOfGame(isWinner) {
+  if (isWinner) {
+    modalPopUp();
+    refs.textOutput.textContent = `Player ${player} is winner`;
+    lastWinner = player;
+    reset();
+  } else if (!isWinner && counter === 9) {
+    modalPopUp();
+    refs.textOutput.textContent = 'DRAW';
+    reset();
+  }
 }
