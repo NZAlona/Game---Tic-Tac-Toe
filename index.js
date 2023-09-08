@@ -1,6 +1,6 @@
 const refs = {
-  divContainer: document.querySelector('.container'),
-  divBackdrop: document.querySelector('.backdrop'),
+  divContainer: document.querySelector('.js-container'),
+  divBackdrop: document.querySelector('.js-backdrop'),
   textOutput: document.querySelector('.txt'),
   btnClose: document.querySelector('.close'),
 };
@@ -10,15 +10,15 @@ refs.divBackdrop.classList.remove('.is-hidden');
 const invokeFunction = createField();
 refs.divContainer.insertAdjacentHTML('beforeend', invokeFunction);
 
-// let markup = ``;
+// let markup = '';
 // for (let i = 0; i < 9; i += 1) {
-//   markup += `<div class="field" data-id="1"></div>`;
+//   markup += `<div class="field" data-id='${i}'></div>`;
 // }
 // refs.divContainer.insertAdjacentHTML('beforeend', markup);
 
 function createField() {
   return ` <div class="field" data-id="1"></div>
-      <div class="field" data-id="2" ></div>
+      <div class="field" data-id="2"></div>
       <div class="field" data-id="3"></div>
       <div class="field" data-id="4"></div>
       <div class="field" data-id="5"></div>
@@ -31,7 +31,6 @@ function createField() {
 refs.divContainer.addEventListener('click', onFieldClick);
 
 let player = 'X';
-let lastWinner = '';
 let counter = 0;
 let stepX = [];
 let stepO = [];
@@ -47,25 +46,22 @@ const winnerArr = [
 ];
 
 function onFieldClick(ev) {
-  if (!ev.target.classList.contains('field')) {
-    return;
-  }
-
   counter += 1;
 
   if (!ev.target.textContent) {
     const id = Number(ev.target.dataset.id);
+    let isWinner;
     if (player === 'X') {
-      ev.target.style.backgroundColor = 'blue';
+      ev.target.style.backgroundColor = 'grey';
       stepX.push(id);
-      const isWinner = chooseWinner(stepX);
-      endOfGame(isWinner);
+      isWinner = chooseWinner(stepX);
     } else {
-      ev.target.style.backgroundColor = 'lightblue';
+      ev.target.style.backgroundColor = 'lightgrey';
       stepO.push(id);
-      const isWinner = chooseWinner(stepO);
-      endOfGame(isWinner);
+      isWinner = chooseWinner(stepO);
     }
+
+    if (endOfGame(isWinner)) return;
 
     ev.target.textContent = player;
     player = player === 'X' ? 'O' : 'X';
@@ -79,7 +75,7 @@ function chooseWinner(arrPlayers) {
 
 function reset() {
   refs.divContainer.innerHTML = invokeFunction;
-  player = lastWinner === 'X' ? 'O' : 'X';
+  player = 'X';
   stepO = [];
   stepX = [];
   counter = 0;
@@ -87,23 +83,28 @@ function reset() {
 
 function modalPopUp() {
   refs.divBackdrop.classList.toggle('is-hidden');
+  document.body.classList.add('body');
 }
 
 refs.btnClose.addEventListener('click', onBtnClick);
 
 function onBtnClick() {
   refs.divBackdrop.classList.add('is-hidden');
+  document.body.classList.remove('body');
 }
 
 function endOfGame(isWinner) {
   if (isWinner) {
     modalPopUp();
     refs.textOutput.textContent = `Player ${player} is winner`;
-    lastWinner = player;
     reset();
+    return true;
   } else if (!isWinner && counter === 9) {
     modalPopUp();
     refs.textOutput.textContent = 'DRAW';
     reset();
+    return true;
   }
+
+  return false;
 }
