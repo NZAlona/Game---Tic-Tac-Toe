@@ -10,22 +10,12 @@ refs.divBackdrop.classList.remove('.is-hidden');
 const invokeFunction = createField();
 refs.divContainer.insertAdjacentHTML('beforeend', invokeFunction);
 
-// let markup = '';
-// for (let i = 0; i < 9; i += 1) {
-//   markup += `<div class="field" data-id='${i}'></div>`;
-// }
-// refs.divContainer.insertAdjacentHTML('beforeend', markup);
-
 function createField() {
-  return ` <div class="field" data-id="1"></div>
-      <div class="field" data-id="2"></div>
-      <div class="field" data-id="3"></div>
-      <div class="field" data-id="4"></div>
-      <div class="field" data-id="5"></div>
-      <div class="field" data-id="6"></div>
-      <div class="field" data-id="7"></div>
-      <div class="field" data-id="8"></div>
-      <div class="field" data-id="9"></div>`;
+  let markup = '';
+  for (let i = 1; i <= 9; i += 1) {
+    markup += `<div class="field" data-id='${i}'></div>`;
+  }
+  return markup;
 }
 
 refs.divContainer.addEventListener('click', onFieldClick);
