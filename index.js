@@ -38,9 +38,11 @@ const winnerArr = [
 function onFieldClick(ev) {
   counter += 1;
 
+  let isWinner = false;
+
   if (!ev.target.textContent) {
-    const id = Number(ev.target.dataset.id);
-    let isWinner;
+    let id = Number(ev.target.dataset.id);
+
     if (player === 'X') {
       ev.target.style.backgroundColor = 'grey';
       stepX.push(id);
@@ -51,16 +53,16 @@ function onFieldClick(ev) {
       isWinner = chooseWinner(stepO);
     }
 
+    ev.target.textContent = player;
+
     if (endOfGame(isWinner)) return;
 
-    ev.target.textContent = player;
     player = player === 'X' ? 'O' : 'X';
   }
 }
 
 function chooseWinner(arrPlayers) {
-  const res = winnerArr.some(valuesArr => valuesArr.every(value => arrPlayers.includes(value)));
-  return res;
+  return winnerArr.some(valuesArr => valuesArr.every(value => arrPlayers.includes(value)));
 }
 
 function reset() {
@@ -74,6 +76,15 @@ function reset() {
 function modalPopUp() {
   refs.divBackdrop.classList.toggle('is-hidden');
   document.body.classList.add('body');
+  refs.divBackdrop.addEventListener('click', onBackdropClick);
+}
+
+function onBackdropClick(ev) {
+  if (!ev.target.classList.contains('js-backdrop')) {
+    return;
+  } else {
+    refs.divBackdrop.classList.add('is-hidden');
+  }
 }
 
 refs.btnClose.addEventListener('click', onBtnClick);
@@ -85,14 +96,24 @@ function onBtnClick() {
 
 function endOfGame(isWinner) {
   if (isWinner) {
-    modalPopUp();
+    setTimeout(() => {
+      modalPopUp();
+    }, 500);
     refs.textOutput.textContent = `Player ${player} is winner`;
-    reset();
+    setTimeout(() => {
+      reset();
+    }, 500);
+
     return true;
   } else if (!isWinner && counter === 9) {
-    modalPopUp();
+    setTimeout(() => {
+      modalPopUp();
+    }, 500);
     refs.textOutput.textContent = 'DRAW';
-    reset();
+    setTimeout(() => {
+      reset();
+    }, 500);
+
     return true;
   }
 
