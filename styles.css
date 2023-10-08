@@ -20,6 +20,7 @@
   justify-content: center;
   align-items: center;
   font-size: 45px;
+  cursor: pointer;
 }
 
 .backdrop {
@@ -30,7 +31,7 @@
   left: 0;
   background-color: rgba(0, 0, 0, 0.4);
   overflow-y: scroll;
-  /* this property adds scroll-bar on modal window when modal window content is longer than vieport  */
+  /* this property adds scroll-bar on modal window(and scrolls ONLY MoDal not background with context) when modal window content is longer than vieport  */
 }
 
 .backdrop.is-hidden {
@@ -51,8 +52,8 @@
 
 .body {
   overflow: hidden;
-  /* this property prevents scrolling page when modal is open */
 }
+/* this property prevents scrolling page when modal is open */
 
 .close {
   width: 35px;
